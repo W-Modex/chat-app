@@ -1,24 +1,41 @@
 #include "network.h"
+#include "clients.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/poll.h>
 #include <unistd.h>
+#include <poll.h>
 
 int main(int argc, char** argv) {
     if (argc < 2) {
         printf("Usage: %s <port>", argv[0]);
     }
-    int socket_fd = get_listener_fd(argv[1]);
-    if (socket_fd < 0) {
+    int fdsize = 10;
+    int fdcount = 0;
+    struct pollfd *pfds = malloc(sizeof(struct pollfd) * fdsize);
+
+    int listener = get_listener_fd(argv[1]);
+    if (listener < 0) {
         fprintf(stderr, "failed to connect\n");
         exit(EXIT_FAILURE);
     }
-    printf("server listening to port %s with fd: %d\n", argv[1], socket_fd);
-    int client_fd = accept_client(socket_fd);
-    if (client_fd < 0) {
-        fprintf(stderr, "failed to accept client");
+    printf("server listening to port %s with fd: %d\n", argv[1], listener);
+
+    pfds[0].fd = listener;
+    pfds[0].events = POLLIN;
+    fdcount++;
+
+    while (1) {
+        int poll_count = poll(pfds, fdcount, -1);
+
+        if (poll_count == -1) {
+            perror("poll");
+            exit(1);
+        }
+        
+        process_connections(&pfds, listener, &fdcount, &fdsize);
     }
-    printf("a client joined with fd: %d", client_fd);
-    close(socket_fd);
-    close(client_fd);
+
+    free(pfds);
     return 0;
 }

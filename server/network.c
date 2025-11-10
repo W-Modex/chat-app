@@ -60,8 +60,7 @@ int accept_client(int socket_fd) {
 int send_message(int client_fd, const char *msg, int msg_size) {
     int bytes_sent = send(client_fd, msg, msg_size, 0);
     if (bytes_sent < 0) {
-        perror("send");
-        exit(1);
+        return -1;
     }
     return bytes_sent;
 }
@@ -69,8 +68,7 @@ int send_message(int client_fd, const char *msg, int msg_size) {
 int recv_message(int client_fd, char *buf, int buf_size) {
     int bytes_recv = recv(client_fd, buf, buf_size, 0);
     if (bytes_recv < 0) {
-        perror("recv");
-        exit(1);
+        return -1;
     }
     return bytes_recv;
 }
