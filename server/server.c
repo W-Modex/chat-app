@@ -1,4 +1,4 @@
-#include "network.h"
+#include "../network.h"
 #include "clients.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +9,7 @@
 int main(int argc, char** argv) {
     if (argc < 2) {
         printf("Usage: %s <port>", argv[0]);
+        exit(1);
     }
     int fdsize = 10;
     int fdcount = 0;
@@ -32,7 +33,8 @@ int main(int argc, char** argv) {
             perror("poll");
             exit(1);
         }
-        
+        printf("current poll_count: %d\n", poll_count);
+        fflush(stdout);
         process_connections(&pfds, listener, &fdcount, &fdsize);
     }
 
