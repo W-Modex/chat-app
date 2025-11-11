@@ -1,4 +1,5 @@
 #include "../network.h"
+#include "ui.h"
 #include <bits/pthreadtypes.h>
 #include <stdlib.h>
 #include <stdio.h>
