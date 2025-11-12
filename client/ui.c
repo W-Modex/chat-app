@@ -19,7 +19,7 @@ void init_ui() {
     mvwprintw(output, 1, 1, "hello");
     wrefresh(output);
 
-    WINDOW *input = newwin(3, (3 * xMax / 4)-2, yMax - 4, (xMax / 4) + 2);
+    WINDOW *input = newwin(3, (3 * xMax / 4) - 2, yMax - 4, (xMax / 4) + 2);
     box(input, 0, 0);
     mvwprintw(input, 1, 1, ">");
     wrefresh(input);
@@ -27,3 +27,4 @@ void init_ui() {
     wgetch(input);
     endwin();
 }
+

@@ -1,5 +1,6 @@
-#include "clients.h"
 #include "../network.h"
+#include "../protocol.h"
+#include "clients.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/poll.h>
@@ -35,8 +36,8 @@ void add_connection(struct pollfd **pfds, int listener, int *fdcount, int *fdsiz
 }
 
 void handle_client(struct pollfd **pfds, int listener, int client_fd, int *fdcount) {
-    char buf[256];
-    int bytes_recv = recv_message(client_fd, buf, 255);
+    char buf[MAX_MESSAGE_LENGTH];
+    int bytes_recv = recv_message(client_fd, buf,   MAX_MESSAGE_LENGTH-1);
 
     if (bytes_recv < 0) {
         perror("failed to recv message");
@@ -55,7 +56,7 @@ void handle_client(struct pollfd **pfds, int listener, int client_fd, int *fdcou
     for (int i = 0; i < *fdcount; i++) {
         if ((*pfds)[i].fd == client_fd || (*pfds)[i].fd == listener) continue;
         int bytes_sent = send_message((*pfds)[i].fd, buf, bytes_recv);
-        if (bytes_sent == -1) {
+        if (bytes_sent == -1) {  
             perror("failed to send message");
             exit(1);
         }

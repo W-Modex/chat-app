@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
         printf("Usage: %s <port>", argv[0]);
         exit(1);
     }
+    
     int fdsize = 10;
     int fdcount = 0;
     struct pollfd *pfds = malloc(sizeof(struct pollfd) * fdsize);
