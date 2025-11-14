@@ -1,7 +1,9 @@
 #include "../network.h"
+#include "../protocol.h"
 #include "clients.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/poll.h>
 #include <unistd.h>
 #include <poll.h>
@@ -12,17 +14,22 @@ int main(int argc, char** argv) {
         exit(1);
     }
     
-    int fdsize = 10;
+    int fdsize = STARTER_SERVER_SIZE;
     int fdcount = 0;
+    
     struct pollfd *pfds = malloc(sizeof(struct pollfd) * fdsize);
-
+    Client *clients = malloc(sizeof(Client) * fdsize);
+    
     int listener = get_listener_fd(argv[1]);
     if (listener < 0) {
         fprintf(stderr, "failed to connect\n");
         exit(EXIT_FAILURE);
     }
-    printf("server listening to port %s with fd: %d\n", argv[1], listener);
-
+    printf("server listening to port %s\n", argv[1]);
+    
+    clients[0].active = 1;
+    clients[0].fd = listener;
+    strcpy(clients[0].name, "server");
     pfds[0].fd = listener;
     pfds[0].events = POLLIN;
     fdcount++;
@@ -36,7 +43,7 @@ int main(int argc, char** argv) {
         }
         printf("current poll_count: %d\n", poll_count);
         fflush(stdout);
-        process_connections(&pfds, listener, &fdcount, &fdsize);
+        process_connections(&pfds, &clients, listener, &fdcount, &fdsize);
     }
 
     free(pfds);

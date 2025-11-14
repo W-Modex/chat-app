@@ -35,7 +35,8 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
     pthread_t recv_thread;
-    struct Client client;
+    Client client;
+    char buf[MAX_MESSAGE_LENGTH];
 
     client.fd = connect_to(argv[1], argv[2]);
     if (client.fd < 0) {
@@ -43,18 +44,24 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
-    printf("Choose a name: ");
-    fgets(client.name, 10, stdin);
+    recv_message(client.fd, buf, MAX_MESSAGE_LENGTH);
+    if (strncmp(buf, "NAME?", 5) == 0) {
+        
+        printf("Choose a name: ");
+        fgets(client.name, MAX_NAME_LENGTH, stdin);
 
-    printf("Connected successfully (name = %s)\n", client.name);
-    
+        client.name[strcspn(client.name, "\n")] = 0;
 
-    // TODO: add ncurses ui
+        char msg[6 + MAX_MESSAGE_LENGTH];
+        sprintf(msg, "NAME:%s\n", client.name);
+
+        send_message(client.fd, msg, strlen(msg));
+
+        printf("Connected successfully as [%s]\n", client.name);
+    }
 
     pthread_create(&recv_thread, NULL, receiving_routine, (void*) &client.fd);
     
-
-    char buf[MAX_MESSAGE_LENGTH];
     int bytes_sent;
     while (1) {
         fflush(stdout);

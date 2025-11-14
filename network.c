@@ -1,4 +1,5 @@
 #include "network.h"
+#include "protocol.h"
 #include <asm-generic/socket.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -84,13 +85,30 @@ int connect_to(char *ip, char *port) {
     return socket_fd;
 }
 
-int accept_client(int socket_fd) {
+Client accept_client(int listener) {
     struct sockaddr_storage client_addr;
     socklen_t client_addr_size = sizeof(client_addr);
+    Client new_client;
 
-    int client_fd = accept(socket_fd, (struct sockaddr*)&client_addr, &client_addr_size);
-    return client_fd;
+    new_client.fd = accept(listener, (struct sockaddr*)&client_addr, &client_addr_size);
+    new_client.name[0] = '\0';
+
+    send_message(new_client.fd, "NAME?\n", 6);
+
+    char buffer[MAX_MESSAGE_LENGTH];
+    int n = recv_message(new_client.fd, buffer, sizeof(buffer));
+
+    if (n > 0 && strncmp(buffer, "NAME:", 5) == 0) {
+        strncpy(new_client.name, buffer + 5, MAX_NAME_LENGTH - 1);
+
+        new_client.name[strcspn(new_client.name, "\n")] = 0;
+    } else {
+        strcpy(new_client.name, "Unknown");
+    }
+    new_client.active = 1;
+    return new_client;
 }
+
 
 int send_message(int client_fd, const char *msg, int msg_size) {
     int bytes_sent = send(client_fd, msg, msg_size, 0);
