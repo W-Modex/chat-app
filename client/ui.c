@@ -1,5 +1,6 @@
 #include "ui.h"
 #include <ncurses.h>
+#include <stdbool.h>
 
 void init_ui() {
     initscr();
@@ -22,9 +23,22 @@ void init_ui() {
     WINDOW *input = newwin(3, (3 * xMax / 4) - 2, yMax - 4, (xMax / 4) + 2);
     box(input, 0, 0);
     mvwprintw(input, 1, 1, ">");
+    keypad(input, true);
     wrefresh(input);
-
-    wgetch(input);
+    handle_input(input);
     endwin();
 }
 
+void handle_input(WINDOW* input) {
+    while (1) {
+        char c = wgetch(input);
+        switch(c) {
+            case KEY_DL:
+                break;
+            case KEY_LEFT:
+                break;
+            case KEY_RIGHT:
+                break;
+        }
+    }
+}
