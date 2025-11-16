@@ -16,9 +16,9 @@ void process_connections(struct pollfd **pfds, Client **clients, int listener, i
     }
 }
 
-void broadcast(struct pollfd ** pfds, int listener, int* fdcount, char* msg) {
+void broadcast(struct pollfd ** pfds, int listener, int idx, int* fdcount, char* msg) {
     for (int i = 0; i < *fdcount; i++) {
-        if ((*pfds)[i].fd == listener) continue;
+        if ((*pfds)[i].fd == listener || idx == i) continue;
         int bytes_sent = send_message((*pfds)[i].fd, msg, strlen(msg));
         if (bytes_sent == -1) {  
             perror("failed to send message");
@@ -46,8 +46,8 @@ void add_connection(struct pollfd **pfds, Client** clients, int listener, int *f
     (*pfds)[*fdcount].revents = 0;
     (*fdcount)++;
     char msg[MAX_NAME_LENGTH+25];
-    sprintf(msg, "%s has joined the chat\n", new_client.name);
-    broadcast(pfds, listener, fdcount, msg);
+    sprintf(msg, "%s has joined the chat", new_client.name);
+    broadcast(pfds, listener, *fdcount-1, fdcount, msg);
 }
 
 void handle_client(struct pollfd **pfds, Client** clients, int listener, int idx, int *fdcount) {
@@ -70,7 +70,7 @@ void handle_client(struct pollfd **pfds, Client** clients, int listener, int idx
     char msg[MAX_NAME_LENGTH+MAX_MESSAGE_LENGTH];
     sprintf(msg, "%s: %s", (*clients)[idx].name, buf);
 
-    broadcast(pfds, listener, fdcount, msg);
+    broadcast(pfds, listener, idx, fdcount, msg);
 
     printf("the message: \"%s\" has been broadcasted\n", buf);
     fflush(stdout);

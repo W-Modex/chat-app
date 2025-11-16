@@ -1,5 +1,4 @@
 #include "../network.h"
-#include "../protocol.h"
 #include "ui.h"
 #include <bits/pthreadtypes.h>
 #include <stdlib.h>
@@ -23,8 +22,7 @@ void* receiving_routine(void* arg) {
             break;
         }
         buf[bytes_recv] = '\0';
-        printf("%s", buf);
-        fflush(stdout);
+        handle_receiving(buf);
     }
     return NULL;
 }
@@ -61,17 +59,8 @@ int main(int argc, char** argv) {
     }
 
     pthread_create(&recv_thread, NULL, receiving_routine, (void*) &client.fd);
-    
-    int bytes_sent;
-    while (1) {
-        fflush(stdout);
-        fgets(buf, MAX_MESSAGE_LENGTH, stdin);
-        bytes_sent = send_message(client.fd, buf, strlen(buf));
-        if (bytes_sent < 0) {
-            perror("failed to send msg");
-            exit(1);
-        }
-    }
+    init_ui(client.fd);
+
 
     close(client.fd);
     return 0;
