@@ -41,8 +41,6 @@ int main(int argc, char** argv) {
             perror("poll");
             exit(1);
         }
-        printf("current poll_count: %d\n", poll_count);
-        fflush(stdout);
         process_connections(&pfds, &clients, listener, &fdcount, &fdsize);
     }
 

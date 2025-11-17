@@ -1,5 +1,6 @@
 #include "../network.h"
 #include "ui.h"
+#include <ctype.h>
 #include <bits/pthreadtypes.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -44,13 +45,31 @@ int main(int argc, char** argv) {
 
     recv_message(client.fd, buf, MAX_MESSAGE_LENGTH);
     if (strncmp(buf, "NAME?", 5) == 0) {
-        
+        choose_name:
         printf("Choose a name: ");
         fgets(client.name, MAX_NAME_LENGTH, stdin);
 
+        char *start = client.name;
+        char *end = client.name + strlen(client.name) - 1;
+
+        while (isspace((unsigned char)*start)) {
+            start++;
+        }
+
+        while (end > start && isspace((unsigned char)*end)) {
+            end--;
+        }
+
+        *(end + 1) = '\0';
+
+        if (start != client.name) {
+            memmove(client.name, start, strlen(start) + 1); 
+        }
+        if (strlen(client.name) == 0) goto choose_name;
+
         client.name[strcspn(client.name, "\n")] = 0;
 
-        char msg[6 + MAX_MESSAGE_LENGTH];
+        char msg[6 + MAX_NAME_LENGTH];
         sprintf(msg, "NAME:%s\n", client.name);
 
         send_message(client.fd, msg, strlen(msg));

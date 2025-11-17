@@ -46,8 +46,8 @@ void add_connection(struct pollfd **pfds, Client** clients, int listener, int *f
     (*pfds)[*fdcount].revents = 0;
     (*fdcount)++;
     char msg[MAX_NAME_LENGTH+25];
-    sprintf(msg, "%s has joined the chat", new_client.name);
-    broadcast(pfds, listener, *fdcount-1, fdcount, msg);
+    sprintf(msg, "SERVER: %s has joined the chat", new_client.name);
+    broadcast(pfds, listener, -1, fdcount, msg);
 }
 
 void handle_client(struct pollfd **pfds, Client** clients, int listener, int idx, int *fdcount) {
@@ -77,14 +77,19 @@ void handle_client(struct pollfd **pfds, Client** clients, int listener, int idx
 }
 
 void close_connection(struct pollfd **pfds, Client** clients, int client_fd, int *fdcount) {
+    char name[MAX_NAME_LENGTH];
     for (int i = 0; i < *fdcount; i++) {
         if ((*pfds)[i].fd == client_fd) {
             (*pfds)[i] = (*pfds)[*fdcount-1];
             (*clients)[i] = (*clients)[*fdcount-1];
+            strcpy(name, (*clients)[i].name);
             (*fdcount)--;
             break;
         }
     }
-    printf("client (fd = %d) has closed connection", client_fd);
+    char msg[MAX_MESSAGE_LENGTH];
+    sprintf(msg, "SERVER: %s has left the chat", name);
+    printf("%s has closed the connection", name);
+    broadcast(pfds, (*clients)[0].fd,  -1, fdcount, msg);
     fflush(stdout);
 }
