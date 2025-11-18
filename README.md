@@ -49,34 +49,32 @@ Make sure you have the following installed on Linux:
 sudo apt install build-essential gcc make libncurses-dev
 ```
 Build Server
-bash
-Copy code
+```
 cd server
 make
+```
 Build Client
-bash
-Copy code
+```
 cd client
 make
+```
 ▶ Usage
 Start Server
-bash
-Copy code
+```
 ./server <port>
+```
 Example:
-
-bash
-Copy code
+```
 ./server 9000
+```
 Start Client
-bash
-Copy code
+```
 ./client <ip> <port>
+```
 Example:
-
-bash
-Copy code
+```
 ./client 127.0.0.1 9000
+```
 You will be asked to choose a username, then the chat UI starts.
 
 🖥 Controls
@@ -95,11 +93,10 @@ Broadcast functionality excludes sender
 
 Protocol
 Simple message format:
-
-ruby
-Copy code
+```
 NAME:<username>
 MSG:<message text>
+```
 UI (ncurses)
 Two windows: output (chat history) and input (typing field)
 
