@@ -90,11 +90,10 @@ Automatically scrolls when buffer is full
 Draws borders and updates only necessary areas
 
 📌 Limitations / Planned Improvements
-Status	Feature
-❌ Not implemented	Windows support (PDCurses + Winsock)
-🟡 Partial	Better resizing logic without UI flicker
-🔜 Planned	Command system (/quit, /whisper, /list)
-🔜 Planned	Message timestamps
+  - ❌ Not implemented	Windows support (PDCurses + Winsock)
+  - 🟡 Partial	Better resizing logic without UI flicker
+  - 🔜 Planned	Command system (/quit, /whisper, /list)
+  - 🔜 Planned	Message timestamps
 
 🧠 Educational Goals
 This project is meant to help understand:
@@ -112,9 +111,6 @@ MIT License — free to use, modify, and learn from.
 
 🤝 Contributing
 Pull requests are welcome if they keep the code:
-
-Simple and easy to read
-
-Focused on learning sockets and ncurses
-
-Fully Linux-compatible
+  - Simple and easy to read
+  - Focused on learning sockets and ncurses
+  - Fully Linux-compatible
