@@ -47,6 +47,7 @@ Make sure you have the following installed on Linux:
 
 ```bash
 sudo apt install build-essential gcc make libncurses-dev
+```
 Build Server
 bash
 Copy code
