@@ -15,14 +15,14 @@ void init_ui(int client_fd) {
     int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
 
-    output = newwin(yMax - 5, xMax, 0, 0);
+    output = newwin(yMax - 3, xMax, 0, 0);
     box(output, 0, 0);
     int output_yMax, output_xMax;
     getmaxyx(output, output_yMax, output_xMax);
     mvwprintw(output, 1, (output_xMax/2)-2, "Chat");
     wrefresh(output);
 
-    input = newwin(3, xMax, yMax - 4, 0);
+    input = newwin(3, xMax, yMax - 3, 0);
     box(input, 0, 0);
     mvwprintw(input, 1, 1, ">");
     keypad(input, true);
