@@ -17,26 +17,11 @@ Designed for learning and experimenting with networking, concurrency, and termin
 
 ---
 
-## 🧩 Project Structure
-
-/server
-server.c
-clients.c
-/client
-client.c
-ui.c
-/common
-network.c
-network.h
-protocol.h
-
-yaml
-Copy code
-
+```
 **Server:** Accepts clients, reads messages, broadcasts to others  
 **Client:** Connects to the server, handles chat UI, sends/receives messages  
 **UI (ncurses):** Handles resizing, scrolling, input, output display
-
+```
 ---
 
 ## 🚀 Build & Run
